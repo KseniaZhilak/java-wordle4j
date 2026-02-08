@@ -3,8 +3,9 @@ package ru.yandex.practicum;
 import ru.yandex.practicum.exeption.EmptyDictionaryExeption;
 import ru.yandex.practicum.exeption.WordNotFoundInDictionary;
 
-import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class WordleGame {
@@ -25,14 +26,14 @@ public class WordleGame {
     }
 
     public void play() throws EmptyDictionaryExeption {
-        if(dictionary.getWords().isEmpty()) throw new EmptyDictionaryExeption("Загружен пустой словарь");
+        if (dictionary.getWords().isEmpty()) throw new EmptyDictionaryExeption("Загружен пустой словарь");
         answer = dictionary.getWords().get((ThreadLocalRandom.current().nextInt(dictionary.getWords().size())));
         System.out.println("Угадай слово: ");
 
         int steps = 0;
-        while(steps < COUNT_MAX) {
+        while (steps < COUNT_MAX) {
             prompt = getUserInput();
-            if(isWin()) return;
+            if (isWin()) return;
             System.out.println(dictionary.getMask(prompt, answer));
             steps++;
         }
@@ -43,9 +44,9 @@ public class WordleGame {
 
     public String getUserInput() {
         boolean isWord = false;
-        while(!isWord){
+        while (!isWord) {
             prompt = scanner.nextLine();
-            if(!prompt.isEmpty()){
+            if (!prompt.isEmpty()) {
                 try {
                     validationWord(prompt);
                     lastPrompts.add(prompt);
@@ -65,14 +66,14 @@ public class WordleGame {
     }
 
     public void validationWord(String word) throws WordNotFoundInDictionary {
-        if(!dictionary.getWords().contains(word) || word.length() != 5){
+        if (!dictionary.getWords().contains(word) || word.length() != 5) {
             throw new WordNotFoundInDictionary("Слова нет в словаре или оно меньше пяти символов");
         }
 
     }
 
     public boolean isWin() {
-        if(answer.equals(prompt)){
+        if (answer.equals(prompt)) {
             System.out.println("Вы выиграли!");
             return true;
         }

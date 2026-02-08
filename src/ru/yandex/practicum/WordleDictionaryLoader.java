@@ -1,8 +1,10 @@
 package ru.yandex.practicum;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -26,7 +28,7 @@ public class WordleDictionaryLoader {
             }
         }
 
-       return new WordleDictionary(words);
+        return new WordleDictionary(words);
     }
 
 }

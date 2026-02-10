@@ -11,7 +11,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
-public class Logger {
+public class Logger implements AutoCloseable {
 
     private PrintWriter writer;
 
@@ -27,6 +27,7 @@ public class Logger {
         }
     }
 
+    @Override
     public void close() {
         if (writer != null) {
             writer.close();

@@ -17,14 +17,8 @@ public class WordleDictionaryLoader {
             while (br.ready()) {
                 String line = br.readLine();
                 if (!line.isBlank() && line.length() == 5) {
-                    words.add(line.toLowerCase());
+                    words.add(line.toLowerCase().replace("ё", "е"));
                 }
-            }
-        }
-
-        for (int i = 0; i < words.size(); i++) {
-            if (words.get(i).contains("ё")) {
-                words.set(i, words.get(i).replace("ё", "е"));
             }
         }
 

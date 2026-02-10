@@ -9,19 +9,21 @@ public class Wordle {
     public static void main(String[] args) {
 
         WordleDictionaryLoader loader = new WordleDictionaryLoader();
-        Logger logger = new Logger();
 
-        try {
+        try (Logger logger = new Logger()) {
             logger.createLogFile("log.txt");
-            WordleDictionary dictionary = loader.readFile();
-            WordleGame game = new WordleGame(dictionary, logger);
-            game.play();
-        } catch (IOException | EmptyDictionaryExeption e) {
-            logger.log(e.getMessage());
-        } finally {
-            logger.close();
-        }
 
+            try {
+                WordleDictionary dictionary = loader.readFile();
+                WordleGame game = new WordleGame(dictionary, logger);
+                game.play();
+            } catch (IOException | EmptyDictionaryExeption e) {
+                logger.log(e.getMessage());
+            }
+
+        } catch (IOException e) {
+            System.err.println("Не удалось создать лог-файл: " + e.getMessage());
+        }
     }
 
 }

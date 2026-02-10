@@ -5,21 +5,25 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.exeption.EmptyDictionaryExeption;
 import ru.yandex.practicum.exeption.WordNotFoundInDictionary;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class WordleTest {
 
+    static WordleGame game;
+    static Logger logger;
     static WordleDictionary dictionary;
 
     @Test
-    void checkWordMask(){
+    void checkWordMask() {
         String answer = "казак";
         String prompt = "камаз";
-        String mask = dictionary.getMask(prompt, answer);
+        String mask = game.getMask(prompt, answer);
         assertEquals("++-+^", mask);
 
     }
@@ -31,9 +35,9 @@ class WordleTest {
         List<String> lastPrompts = List.of("камаз");
         String answer = "казак";
 
-        String prompt = dictionary.getPrompt(lastPrompts, answer);
+        String prompt = game.getPrompt(lastPrompts, answer);
 
-        String maskCurrentPrompts = dictionary.getMask(prompt, answer);
+        String maskCurrentPrompts = game.getMask(prompt, answer);
         assertTrue(maskCurrentPrompts.matches(pattern));
 
     }
@@ -42,7 +46,7 @@ class WordleTest {
     void checkEmptyLastPrompts() {
         List<String> lastPrompts = Collections.emptyList();
 
-        String result = dictionary.getPrompt(lastPrompts, "answer");
+        String result = game.getPrompt(lastPrompts, "answer");
         assertTrue(dictionary.getWords().contains(result));
     }
 
@@ -51,12 +55,10 @@ class WordleTest {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
 
-        Logger logger = new Logger();
-        WordleGame game = new WordleGame(dictionary, logger);
-        game.setAnswer("казак");
-        game.setPrompt("казак");
+        dictionary = new WordleDictionary(List.of("казак"));
+        game = new WordleGame(dictionary, logger);
 
-        assertTrue(game.isWin());
+        assertTrue(game.isWin("казак", "казак"));
 
         System.setOut(System.out);
         assertTrue(outContent.toString().contains("Вы выиграли!"));
@@ -65,11 +67,9 @@ class WordleTest {
 
     @Test
     void checkEmptyDictionary() {
-        Logger logger = new Logger();
-
         WordleDictionary emptyDictionary = new WordleDictionary(Collections.emptyList());
-        WordleGame game = new WordleGame(emptyDictionary, logger);
-        try{
+        game = new WordleGame(emptyDictionary, logger);
+        try {
             game.play();
         } catch (EmptyDictionaryExeption e) {
             logger.log(e.getMessage());
@@ -80,9 +80,7 @@ class WordleTest {
 
     @Test
     void checkUserInputError() {
-        Logger logger = new Logger();
-        WordleGame game = new WordleGame(dictionary, logger);
-        try{
+        try {
             game.validationWord("test");
         } catch (WordNotFoundInDictionary e) {
             logger.log(e.getMessage());
@@ -94,6 +92,8 @@ class WordleTest {
     @BeforeAll
     static void createDictionary() {
         dictionary = new WordleDictionary(List.of("казак", "гонец", "груша", "камаз", "джава", "питон"));
+        logger = new Logger();
+        game = new WordleGame(dictionary, logger);
     }
 
 }

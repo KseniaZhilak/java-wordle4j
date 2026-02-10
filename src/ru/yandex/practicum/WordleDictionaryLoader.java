@@ -1,9 +1,28 @@
 package ru.yandex.practicum;
 
-/*
-этот класс содержит в себе всю рутину по работе с файлами словарей и с кодировками
-    ему нужны методы по загрузке списка слов из файла по имени файла
-    на выходе должен быть класс WordleDictionary
- */
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class WordleDictionaryLoader {
+
+    public WordleDictionary readFile() throws IOException {
+        List<String> words = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("words_ru.txt", UTF_8))) {
+            while (br.ready()) {
+                String line = br.readLine();
+                if (!line.isBlank() && line.length() == 5) {
+                    words.add(line.toLowerCase().replace("ё", "е"));
+                }
+            }
+        }
+
+        return new WordleDictionary(words);
+    }
+
 }
